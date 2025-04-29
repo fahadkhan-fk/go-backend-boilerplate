@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"log"
 
+	"go-backend-boilerplate/config"
+	"go-backend-boilerplate/internal/models"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-
-	"go-backend-boilerplate/config"
 )
 
 func Connect(cfg *config.Config) *gorm.DB {
@@ -28,6 +29,11 @@ func Connect(cfg *config.Config) *gorm.DB {
 	})
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
+	}
+
+	// Run auto migration
+	if err := client.AutoMigrate(&models.User{}); err != nil {
+		log.Fatalf("Failed to migrate database: %v", err)
 	}
 
 	return client
