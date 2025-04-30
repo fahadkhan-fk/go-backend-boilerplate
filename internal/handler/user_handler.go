@@ -2,6 +2,7 @@ package handler
 
 import (
 	"go-backend-boilerplate/internal/service"
+	"go-backend-boilerplate/internal/validator"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -15,8 +16,8 @@ func NewUserHandler(svc service.UserService) *UserHandler {
 }
 
 type registerRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required,min=6"`
 }
 
 func (h *UserHandler) Register(c *fiber.Ctx) error {
@@ -25,8 +26,8 @@ func (h *UserHandler) Register(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
 	}
 
-	if req.Email == "" || req.Password == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Email and password are required"})
+	if err := validator.ValidateStruct(req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 
 	err := h.service.Register(req.Email, req.Password)
