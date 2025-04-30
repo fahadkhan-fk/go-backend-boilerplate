@@ -5,8 +5,8 @@ import (
 
 	"go-backend-boilerplate/config"
 	"go-backend-boilerplate/internal/db"
-	"go-backend-boilerplate/internal/handler"
 	"go-backend-boilerplate/internal/repo"
+	"go-backend-boilerplate/internal/routes"
 	"go-backend-boilerplate/internal/service"
 
 	"github.com/gofiber/fiber/v2"
@@ -24,12 +24,19 @@ func main() {
 
 	app := fiber.New()
 
+	// Initialize repositories
 	userRepo := repo.NewUserRepo(client)
-	userService := service.NewUserService(userRepo)
-	userHandler := handler.NewUserHandler(userService)
 
-	api := app.Group("/api/v1")
-	api.Post("/register", userHandler.Register)
+	// Initialize services
+	userService := service.NewUserService(userRepo)
+
+	// Dependency container
+	deps := &routes.Dependencies{
+		UserService: userService,
+	}
+
+	// Register all routes with dependencies
+	routes.RegisterRoutes(app, deps)
 
 	log.Printf("Server running on port %s...", cfg.ServerPort)
 	log.Fatal(app.Listen(":" + cfg.ServerPort))
