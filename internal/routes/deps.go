@@ -7,4 +7,5 @@ import (
 // Dependencies holds all injected services
 type Dependencies struct {
 	UserService service.UserService
+	JWTSecret   string
 }
