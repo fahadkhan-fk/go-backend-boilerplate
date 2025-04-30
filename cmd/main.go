@@ -28,7 +28,7 @@ func main() {
 	userRepo := repo.NewUserRepo(client)
 
 	// Initialize services
-	userService := service.NewUserService(userRepo)
+	userService := service.NewUserService(userRepo, cfg.JWTSecret)
 
 	// Dependency container
 	deps := &routes.Dependencies{

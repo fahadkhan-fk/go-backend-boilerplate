@@ -14,4 +14,5 @@ func RegisterRoutes(app *fiber.App, deps *Dependencies) {
 
 	api := app.Group("/api/v1")
 	api.Post("/register", userHandler.Register)
+	api.Post("/login", userHandler.Login)
 }

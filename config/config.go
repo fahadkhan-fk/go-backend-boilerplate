@@ -16,6 +16,7 @@ type Config struct {
 	DatabasePassword string
 	DatabaseDb       string
 	DatabaseSslMode  string
+	JWTSecret        string
 }
 
 func Load() *Config {
@@ -33,6 +34,7 @@ func Load() *Config {
 		DatabasePassword: getEnv("DATABASE_PASSWORD", "postgres"),
 		DatabaseDb:       getEnv("DATABASE_DB", "go_boilerplate"),
 		DatabaseSslMode:  getEnv("DATABASE_SSL_MODE", "disable"),
+		JWTSecret:        getEnv("JWT_SECRET", "default-fallback-secret"),
 	}
 }
 
