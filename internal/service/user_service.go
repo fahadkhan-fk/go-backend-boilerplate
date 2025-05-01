@@ -10,7 +10,10 @@ import (
 type UserService interface {
 	Register(email, password string) error
 	Login(email, password string) (string, error)
-	GetByID(id uint) (*models.User, error)
+	GetById(id uint) (*models.User, error)
+	List() ([]models.User, error)
+	Update(id uint, email string) error
+	Delete(id uint) error
 }
 
 type userService struct {
@@ -62,6 +65,24 @@ func (s *userService) Login(email, password string) (string, error) {
 	return token, nil
 }
 
-func (s *userService) GetByID(id uint) (*models.User, error) {
+func (s *userService) GetById(id uint) (*models.User, error) {
 	return s.repo.FindById(id)
+}
+
+func (s *userService) List() ([]models.User, error) {
+	return s.repo.FindAll()
+}
+
+func (s *userService) Update(id uint, email string) error {
+	user, err := s.repo.FindById(id)
+	if err != nil {
+		return err
+	}
+
+	user.Email = email
+	return s.repo.Update(user)
+}
+
+func (s *userService) Delete(id uint) error {
+	return s.repo.Delete(id)
 }

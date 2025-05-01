@@ -18,5 +18,9 @@ func RegisterRoutes(app *fiber.App, deps *Dependencies) {
 	api.Post("/login", userHandler.Login)
 
 	users := api.Group("/users", middleware.JWTAuth(deps.JWTSecret))
+	users.Get("/", userHandler.List)
+	users.Get("/:id", userHandler.Get)
+	users.Patch("/:id", userHandler.Update)
+	users.Delete("/:id", userHandler.Delete)
 	users.Get("/me", userHandler.Me)
 }

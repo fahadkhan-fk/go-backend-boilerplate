@@ -64,7 +64,7 @@ func (h *UserHandler) Login(c *fiber.Ctx) error {
 func (h *UserHandler) Me(c *fiber.Ctx) error {
 	userID := c.Locals("user_id").(uint)
 
-	user, err := h.service.GetByID(userID)
+	user, err := h.service.GetById(userID)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User not found"})
 	}
@@ -73,4 +73,64 @@ func (h *UserHandler) Me(c *fiber.Ctx) error {
 		"id":    user.ID,
 		"email": user.Email,
 	})
+}
+
+func (h *UserHandler) List(c *fiber.Ctx) error {
+	users, err := h.service.List()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+	return c.JSON(users)
+}
+
+func (h *UserHandler) Get(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return fiber.ErrBadRequest
+	}
+
+	user, err := h.service.GetById(uint(id))
+	if err != nil {
+		return fiber.ErrNotFound
+	}
+	return c.JSON(user)
+}
+
+type updateUserRequest struct {
+	Email string `json:"email" validate:"required,email"`
+}
+
+func (h *UserHandler) Update(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return fiber.ErrBadRequest
+	}
+
+	var req updateUserRequest
+	if err := c.BodyParser(&req); err != nil {
+		return fiber.ErrBadRequest
+	}
+
+	if err := validator.ValidateStruct(req); err != nil {
+		return fiber.ErrBadRequest
+	}
+
+	if err := h.service.Update(uint(id), req.Email); err != nil {
+		return fiber.ErrInternalServerError
+	}
+
+	return c.JSON(fiber.Map{"message": "User updated successfully"})
+}
+
+func (h *UserHandler) Delete(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return fiber.ErrBadRequest
+	}
+
+	if err := h.service.Delete(uint(id)); err != nil {
+		return fiber.ErrInternalServerError
+	}
+
+	return c.JSON(fiber.Map{"message": "User deleted successfully"})
 }
