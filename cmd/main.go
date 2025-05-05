@@ -5,6 +5,7 @@ import (
 
 	"go-backend-boilerplate/config"
 	"go-backend-boilerplate/internal/db"
+	"go-backend-boilerplate/internal/logger"
 	"go-backend-boilerplate/internal/repo"
 	"go-backend-boilerplate/internal/routes"
 	"go-backend-boilerplate/internal/service"
@@ -13,6 +14,7 @@ import (
 )
 
 func main() {
+	logger.Init()
 	cfg := config.Load()
 	client := db.Connect(cfg)
 
