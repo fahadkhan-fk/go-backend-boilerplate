@@ -10,16 +10,17 @@ import (
 func RequestLogger() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		start := time.Now()
+		err := c.Next()
+		duration := time.Since(start)
 
-		err := c.Next() // Process request
-
-		stop := time.Since(start)
+		reqID := GetRequestID(c)
 
 		log.Info().
+			Str("request_id", reqID).
 			Str("method", c.Method()).
 			Str("path", c.Path()).
 			Int("status", c.Response().StatusCode()).
-			Dur("latency", stop).
+			Dur("latency", duration).
 			Str("ip", c.IP()).
 			Msg("HTTP request")
 
