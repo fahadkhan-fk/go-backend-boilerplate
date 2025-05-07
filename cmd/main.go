@@ -6,6 +6,7 @@ import (
 	"go-backend-boilerplate/config"
 	"go-backend-boilerplate/internal/db"
 	"go-backend-boilerplate/internal/logger"
+	"go-backend-boilerplate/internal/middleware"
 	"go-backend-boilerplate/internal/repo"
 	"go-backend-boilerplate/internal/routes"
 	"go-backend-boilerplate/internal/service"
@@ -25,6 +26,9 @@ func main() {
 	defer sqlDB.Close()
 
 	app := fiber.New()
+
+	// request logger
+	app.Use(middleware.RequestLogger())
 
 	// Initialize repositories
 	userRepo := repo.NewUserRepo(client)
