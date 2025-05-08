@@ -62,9 +62,18 @@ func (h *UserHandler) Login(c *fiber.Ctx) error {
 }
 
 func (h *UserHandler) Me(c *fiber.Ctx) error {
-	userID := c.Locals("user_id").(uint)
+	val := c.Locals("user_id")
 
-	user, err := h.service.GetById(userID)
+	userId, ok := val.(uint)
+	if !ok {
+		if f64, ok := val.(float64); ok {
+			userId = uint(f64)
+		} else {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid user_id in context"})
+		}
+	}
+
+	user, err := h.service.GetById(userId)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User not found"})
 	}

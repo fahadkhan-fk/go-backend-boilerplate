@@ -29,7 +29,7 @@ func (r *userRepo) Create(user *models.User) error {
 
 func (r *userRepo) FindByEmail(email string) (*models.User, error) {
 	var user models.User
-	err := r.db.Where("email = ?", user.Email).First(&user).Error
+	err := r.db.Where("email = ?", email).First(&user).Error
 	if err != nil {
 		return nil, err
 	}

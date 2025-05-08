@@ -8,7 +8,7 @@ import (
 )
 
 // RegisterRoutes sets up all API routes.
-func RegisterRoutes(app *fiber.App, deps *Dependencies) {
+func RegisterRoutes(app *fiber.App, deps *Dependencies, secret string) {
 
 	// Initialize handlers with dependencies
 	userHandler := handler.NewUserHandler(deps.UserService)
@@ -17,10 +17,10 @@ func RegisterRoutes(app *fiber.App, deps *Dependencies) {
 	api.Post("/register", userHandler.Register)
 	api.Post("/login", userHandler.Login)
 
-	users := api.Group("/users", middleware.JWTAuth(deps.JWTSecret))
+	users := api.Group("/users", middleware.JWTAuth(secret))
+	users.Get("/me", userHandler.Me)
 	users.Get("/", userHandler.List)
 	users.Get("/:id", userHandler.Get)
 	users.Patch("/:id", userHandler.Update)
 	users.Delete("/:id", userHandler.Delete)
-	users.Get("/me", userHandler.Me)
 }

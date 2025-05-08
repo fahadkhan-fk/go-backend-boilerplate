@@ -42,7 +42,7 @@ func main() {
 	}
 
 	// Register all routes with dependencies
-	routes.RegisterRoutes(app, deps)
+	routes.RegisterRoutes(app, deps, cfg.JWTSecret)
 
 	log.Printf("Server running on port %s...", cfg.ServerPort)
 	log.Fatal(app.Listen(":" + cfg.ServerPort))
