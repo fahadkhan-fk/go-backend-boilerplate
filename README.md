@@ -143,3 +143,4 @@ Developed by [Fahad Khan](https://pk.linkedin.com/in/fahadkhan-dev-engineer) —
 
 Todo's:
 - return err itself in the error responses
+- db connection pool settings
