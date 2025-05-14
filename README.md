@@ -18,6 +18,8 @@ A clean, production-ready backend boilerplate built with **Golang**, featuring:
 
 ```
 .
+├── cmd/
+│   └── main.go         # Entry point
 ├── config/              # Environment config loader
 ├── internal/
 │   ├── db/              # GORM connection + migration
@@ -29,9 +31,10 @@ A clean, production-ready backend boilerplate built with **Golang**, featuring:
 │   ├── routes/          # Route setup + dependency injection
 │   └── logger/          # Zerolog initialization
 ├── .env                 # Environment variables
+├── Dockerfile
+├── docker-compose.yml
 ├── go.mod
-└── cmd/
-    └── main.go         # Entry point
+└── README.md
 ```
 
 ---
@@ -119,8 +122,29 @@ curl --location --request DELETE 'http://localhost:8080/api/v1/users/1' \
 ```bash
 cd cmd
 go mod tidy
-cp .env.example .env
 go run main.go
+```
+
+---
+
+## 🐳 Running with Docker Compose
+
+### Recommended: Run app + PostgreSQL together
+
+```bash
+docker compose up --build
+```
+
+### 💡 What it does:
+- Runs the backend (`app`) and PostgreSQL (`db`)
+- Uses healthcheck to wait until DB is ready
+- Connects the services via an internal Docker network
+
+### 📝 Ensure your `.env` has:
+
+```env
+DATABASE_HOST=db
+DATABASE_PORT=5432
 ```
 
 ---
@@ -143,3 +167,4 @@ Developed by [Fahad Khan](https://pk.linkedin.com/in/fahadkhan-dev-engineer) —
 
 Todo's:
 - return err itself in the error responses
+- db connection pool settings
